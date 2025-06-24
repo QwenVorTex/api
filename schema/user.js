@@ -16,14 +16,11 @@ const password = joi.string().pattern(/^[\S]{6,20}$/).required()
 ** 该参数必须是6到20位的非空白字符
 */
 
-// 定义用户注册的验证规则
-const registerSchema = joi.object({
-  username,
-  password
-})
 
-// 定义用户登录的验证规则
-const loginSchema = joi.object({
-  username,
-  password
-})
+
+exports.registerLoginSchema = {
+    body: {
+        username,
+        password
+    }
+}

@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 
 const userRouter = require("./router/user.js");
+const joi = require("@hapi/joi");
 
 
 //创建服务器实例对象
@@ -29,6 +30,16 @@ app.use(
 );
 app.use("/api", userRouter);
 
+
+// 错误处理中间件
+app.use((err, req, res, next) => {
+  if (err instanceof joi.ValidationError) {
+    return res.cc(err, 400);
+  }
+
+  // 未知错误
+  res.cc(err, 500);
+});
 
 //启动服务器
 app.listen(8080, () => {
