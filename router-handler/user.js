@@ -33,7 +33,18 @@ exports.register = (req, res) => {
   // 对密码进行加密
   userInfo.password = bcrypt.hashSync(userInfo.password, 10);
 
-};
+  // 插入新用户到数据库
+  const insertSql = "INSERT INTO ev_users set ?"
+  database.query(insertSql, {username: userInfo.username, password: userInfo.password}, (err, results) => {
+    if (err) {
+        res.send({ status: 500, message: err.message });
+
+    }
+    if (results.affectedRows !== 1) {
+        return res.status(500).send({ status: 500, message: "注册失败，请稍后再试" });
+    }
+    res.send({ status: 200, message: "用户注册成功", user: { username: userInfo.username } });
+});
 
 // 用户登录接口
 exports.login = (req, res) => {
@@ -44,4 +55,4 @@ exports.login = (req, res) => {
   } else {
     res.status(400).send({ status: 400, message: "用户名或密码错误" });
   }
-};
+}};
