@@ -10,7 +10,8 @@ exports.register = (req, res) => {
 
   //对表单中的数据进行合法性校验
   if (!userInfo.username || !userInfo.password) {
-    return res.status(400).send({ status: 400, message: "用户名和密码不能为空" });
+    // return res.status(400).send({ status: 400, message: "用户名和密码不能为空" });
+    return res.cc("用户名和密码不能为空", 400);
   }
 
   // 检查用户名是否已存在
@@ -18,10 +19,13 @@ exports.register = (req, res) => {
   database.query(checkSql, userInfo.username, (err, results) => {
     if (err) {
       console.error("数据库错误: ", err);
-      return res.status(500).send({ status: 500, message: "注册失败，请稍后再试" });
+    //   return res.status(500).send({ status: 500, message: "注册失败，请稍后再试" });
+        return res.cc("注册失败，请稍后再试", 500);
+
     }
     if (results.length > 0) {
-      return res.status(400).send({ status: 400, message: "用户名已存在" });
+    //   return res.status(400).send({ status: 400, message: "用户名已存在" });
+        return res.cc("用户名已存在", 400);
     }
 
     // 用户名不存在，可以注册
@@ -33,12 +37,15 @@ exports.register = (req, res) => {
     database.query(insertSql, { username: userInfo.username, password: userInfo.password }, (err, results) => {
       if (err) {
         console.error("插入数据库错误: ", err);
-        return res.status(500).send({ status: 500, message: "注册失败，请稍后再试" });
+        // return res.status(500).send({ status: 500, message: "注册失败，请稍后再试" });
+        return res.cc("注册失败，请稍后再试", 500);
       }
       if (results.affectedRows !== 1) {
-        return res.status(500).send({ status: 500, message: "注册失败，请稍后再试" });
+        // return res.status(500).send({ status: 500, message: "注册失败，请稍后再试" });
+        return res.cc("注册失败，请稍后再试", 500);
       }
       res.send({ status: 200, message: "用户注册成功", user: { username: userInfo.username } });
+
     });
   });
 };
