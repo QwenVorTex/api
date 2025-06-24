@@ -11,6 +11,13 @@ const joi = require("@hapi/joi");
 const app = express();
 
 
+// 添加请求日志中间件
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`, req.body);
+  next();
+});
+
+
 //封装响应函数
 app.use((req, res, next) => {
   res.cc = (err, status = 200) => {
@@ -19,6 +26,7 @@ app.use((req, res, next) => {
       message: err instanceof Error ? err.message : err
     })
   }
+  next();
 })
 
 
@@ -33,6 +41,8 @@ app.use("/api", userRouter);
 
 // 错误处理中间件
 app.use((err, req, res, next) => {
+  console.error(err);
+
   if (err instanceof joi.ValidationError) {
     return res.cc(err, 400);
   }
