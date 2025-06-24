@@ -2,20 +2,16 @@
 const database = require("../database/index.js");
 const bcrypt = require("bcryptjs");
 
-
 // 用户注册接口
 exports.register = (req, res) => {
-  
-    // 获取用户信息
+  // 获取用户信息
   const userInfo = req.body;
   console.log("用户注册信息: ", userInfo);
-  
 
   //对表单中的数据进行合法性校验
   if (!userInfo.username || !userInfo.password) {
     return res.status(400).send({ status: 400, message: "用户名和密码不能为空" });
   }
-
 
   // 检查用户名是否已存在
   const checkSql = "SELECT * FROM ev_users WHERE username = ?";
@@ -27,24 +23,25 @@ exports.register = (req, res) => {
     if (results.length > 0) {
       return res.status(400).send({ status: 400, message: "用户名已存在" });
     }
-    res.send({ status: 200, message: "用户注册成功", user: { username: userInfo.username } });
-  });
 
-  // 对密码进行加密
-  userInfo.password = bcrypt.hashSync(userInfo.password, 10);
+    // 用户名不存在，可以注册
+    // 对密码进行加密
+    userInfo.password = bcrypt.hashSync(userInfo.password, 10);
 
-  // 插入新用户到数据库
-  const insertSql = "INSERT INTO ev_users set ?"
-  database.query(insertSql, {username: userInfo.username, password: userInfo.password}, (err, results) => {
-    if (err) {
-        res.send({ status: 500, message: err.message });
-
-    }
-    if (results.affectedRows !== 1) {
+    // 插入新用户到数据库
+    const insertSql = "INSERT INTO ev_users SET ?";
+    database.query(insertSql, { username: userInfo.username, password: userInfo.password }, (err, results) => {
+      if (err) {
+        console.error("插入数据库错误: ", err);
         return res.status(500).send({ status: 500, message: "注册失败，请稍后再试" });
-    }
-    res.send({ status: 200, message: "用户注册成功", user: { username: userInfo.username } });
-});
+      }
+      if (results.affectedRows !== 1) {
+        return res.status(500).send({ status: 500, message: "注册失败，请稍后再试" });
+      }
+      res.send({ status: 200, message: "用户注册成功", user: { username: userInfo.username } });
+    });
+  });
+};
 
 // 用户登录接口
 exports.login = (req, res) => {
@@ -55,4 +52,4 @@ exports.login = (req, res) => {
   } else {
     res.status(400).send({ status: 400, message: "用户名或密码错误" });
   }
-}};
+};
