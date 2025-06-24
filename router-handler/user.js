@@ -2,15 +2,15 @@
 exports.register = (req, res) => {
   const { username, password } = req.body;
   // 这里可以添加注册逻辑，比如保存用户信息到数据库
-  res.json({ message: "用户注册成功", user: { username } });
+  res.send({ message: "用户注册成功", user: { username } });
 };
 // 用户登录接口
 exports.login = (req, res) => {
   const { username, password } = req.body;
   // 这里可以添加登录逻辑，比如验证用户信息
   if (username && password) {
-    res.json({ message: "用户登录成功", user: { username } });
+    res.send({ message: "用户登录成功", user: { username } });
   } else {
-    res.status(400).json({ message: "用户名或密码错误" });
+    res.status(400).send({ message: "用户名或密码错误" });
   }
 };
