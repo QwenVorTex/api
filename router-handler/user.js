@@ -8,11 +8,11 @@ exports.register = (req, res) => {
   const userInfo = req.body;
   console.log("用户注册信息: ", userInfo);
 
-  //对表单中的数据进行合法性校验
+/*   //对表单中的数据进行合法性校验
   if (!userInfo.username || !userInfo.password) {
     // return res.status(400).send({ status: 400, message: "用户名和密码不能为空" });
     return res.cc("用户名和密码不能为空", 400);
-  }
+  } */
 
   // 检查用户名是否已存在
   const checkSql = "SELECT * FROM ev_users WHERE username = ?";
