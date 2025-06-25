@@ -5,6 +5,7 @@ const userRouter = require("./router/user.js");
 const joi = require("@hapi/joi");
 const config = require("./config.js");
 const { expressjwt: jwt } = require("express-jwt");
+const userInfoRouter = require("./router/userInfo.js");
 
 //创建服务器实例对象
 const app = express();
@@ -37,6 +38,17 @@ app.use(
 // app.use(jwt({ secret: config.jwtSecret, algorithms: ["HS256"] }));
 
 app.use("/api", userRouter);
+
+// 用户信息路由
+app.use(
+  "/my",
+  jwt({
+    secret: config.jwtSecret,
+    algorithms: ["HS256"],
+    requestProperty: "user",
+  }),
+  userInfoRouter
+);
 
 // 错误处理中间件
 app.use((err, req, res, next) => {
