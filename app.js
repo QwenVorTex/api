@@ -6,10 +6,8 @@ const cors = require("cors");
 const userRouter = require("./router/user.js");
 const joi = require("@hapi/joi");
 
-
 //创建服务器实例对象
 const app = express();
-
 
 // 添加请求日志中间件
 app.use((req, res, next) => {
@@ -17,18 +15,16 @@ app.use((req, res, next) => {
   next();
 });
 
-
 //封装响应函数
 app.use((req, res, next) => {
   res.cc = (err, status = 200) => {
     res.status(status).send({
       status,
-      message: err instanceof Error ? err.message : err
-    })
-  }
+      message: err instanceof Error ? err.message : err,
+    });
+  };
   next();
-})
-
+});
 
 app.use(cors());
 app.use(
@@ -37,7 +33,6 @@ app.use(
   })
 );
 app.use("/api", userRouter);
-
 
 // 错误处理中间件
 app.use((err, req, res, next) => {

@@ -11,11 +11,8 @@ const { registerLoginSchema } = require("../schema/user");
 router.post("/register", expressJoi(registerLoginSchema), userHandler.register);
 // router.post("/register", userHandler.register);
 
-
 // 用户登录接口
 router.post("/login", expressJoi(registerLoginSchema), userHandler.login);
 // router.post("/login", userHandler.login);
-
-
 
 module.exports = router;
