@@ -1,10 +1,10 @@
 //导入模块
 const express = require("express");
-
 const cors = require("cors");
-
 const userRouter = require("./router/user.js");
 const joi = require("@hapi/joi");
+const config = require("./config.js");
+const { expressjwt: jwt } = require("express-jwt");
 
 //创建服务器实例对象
 const app = express();
@@ -27,11 +27,15 @@ app.use((req, res, next) => {
 });
 
 app.use(cors());
+
 app.use(
   express.urlencoded({
     extended: false,
   })
 );
+
+// app.use(jwt({ secret: config.jwtSecret, algorithms: ["HS256"] }));
+
 app.use("/api", userRouter);
 
 // 错误处理中间件
@@ -41,6 +45,14 @@ app.use((err, req, res, next) => {
   if (err instanceof joi.ValidationError) {
     return res.cc(err, 400);
   }
+
+  /* // 对于api接口，忽略JWT错误
+  if (err.name === "UnauthorizedError") {
+    if (req.path === "/api/register" || req.path === "/api/login") {
+      return next(); // 跳过JWT验证
+    }
+    return res.cc("身份认证失败", 401);
+  } */
 
   // 未知错误
   res.cc(err, 500);
