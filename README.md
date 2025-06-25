@@ -71,7 +71,8 @@ http://127.0.0.1:8080
 
 ### 数据库连接
 
-修改 `database/index.js` 中的连接信息：
+1. 本地创建服务器
+   修改 `database/index.js` 中的连接信息：
 
 ```javascript
 const database = mysql.createPool({
@@ -82,6 +83,19 @@ const database = mysql.createPool({
 });
 ```
 
+2. 连接后端人员服务器
+   修改 `database/index.js` 中的连接信息：
+
+````javascript
+const datavase = mysql.createPool({
+  host: "192.168.31.68",
+  user: "remote",
+  password: "ccnuiotapp",
+  database: "my_db_01",
+});
+
+本方法仅适用于与后端处于同一局域网下，即连接mifuxiao_5G网络
+
 ### 数据表结构
 
 ```sql
@@ -90,13 +104,18 @@ CREATE DATABASE IF NOT EXISTS my_db_01;
 USE my_db_01;
 
 -- 创建用户表
-CREATE TABLE IF NOT EXISTS ev_users (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  username VARCHAR(50) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
+CREATE TABLE IF NOT EXISTS `ev_users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(45) NOT NULL,
+  `password` text NOT NULL,
+  `age` int DEFAULT NULL,
+  `phone` varchar(45) DEFAULT NULL,
+  `email` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `username_UNIQUE` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户信息表'
+````
 
 ## API 接口文档
 
