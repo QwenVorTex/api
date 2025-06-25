@@ -3,6 +3,6 @@ const router = express.Router();
 
 const userInfoHandler = require("../router-handler/userInfo");
 
-router.get("/userinfo", userInfoHandler.getUserInfo);
+router.get("/userInfo", userInfoHandler.getUserInfo);
 
 module.exports = router;
