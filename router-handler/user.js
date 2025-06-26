@@ -1,8 +1,9 @@
 //导入所需模块
 const database = require("../database/index.js");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const { jwtSecret, jwtExpire } = require("../config.js");
+// const jwt = require("jsonwebtoken"); // 注释掉JWT
+// const { jwtSecret, jwtExpire } = require("../config.js"); // 注释掉JWT配置
+
 // 用户注册接口
 exports.register = (req, res) => {
   // 获取用户信息
@@ -88,16 +89,18 @@ exports.login = (req, res) => {
     } else {
       const user = { ...results[0], password: "", userPic: "" };
       console.log("登录用户: ", user);
-      // 生成 JWT Token
-      const token = jwt.sign(user, jwtSecret, {
+
+      // 移除JWT Token生成，直接返回成功信息
+      /* const token = jwt.sign(user, jwtSecret, {
         expiresIn: jwtExpire,
       });
-      console.log("生成的 Token: ", token);
+      console.log("生成的 Token: ", token); */
+
       res.send({
         status: 200,
         message: "用户登录成功",
-        token: `Bearer ${token}`, // 前端需要 Bearer 前缀
-        user: { username: user.username },
+        // token: `Bearer ${token}`, // 注释掉token返回
+        user: { username: user.username, id: user.id }, // 添加用户ID，后续验证需要
       });
     }
     /* if (username && password) {

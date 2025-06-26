@@ -4,7 +4,7 @@ const cors = require("cors");
 const userRouter = require("./router/user.js");
 const joi = require("@hapi/joi");
 const config = require("./config.js");
-const { expressjwt: jwt } = require("express-jwt");
+// const { expressjwt: jwt } = require("express-jwt"); // 注释掉JWT
 const userInfoRouter = require("./router/userInfo.js");
 
 //创建服务器实例对象
@@ -39,16 +39,8 @@ app.use(
 
 app.use("/api", userRouter);
 
-// 用户信息路由
-app.use(
-  "/my",
-  jwt({
-    secret: config.jwtSecret,
-    algorithms: ["HS256"],
-    requestProperty: "user",
-  }),
-  userInfoRouter
-);
+// 用户信息路由 - 直接使用，账号密码验证在各自接口中处理
+app.use("/my", userInfoRouter);
 
 // 错误处理中间件
 app.use((err, req, res, next) => {
@@ -58,6 +50,7 @@ app.use((err, req, res, next) => {
     return res.cc(err, 400);
   }
 
+  // 注释掉JWT错误处理，改用账号密码验证
   /* // 对于api接口，忽略JWT错误
   if (err.name === "UnauthorizedError") {
     if (req.path === "/api/register" || req.path === "/api/login") {
